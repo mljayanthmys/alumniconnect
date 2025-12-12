@@ -1,11 +1,9 @@
-# frontend/netlify.toml (CORRECTED)
+# frontend/netlify.toml
 
 [build]
-  # Specifies the subdirectory where the Angular project lives
-  base    = "." # Base is '.' because Netlify's base directory is set to 'frontend'
+  base    = "."
   command = "npm run build"
-  # The folder containing the final HTML/CSS/JS files
-  publish = "dist/frontend"  # <-- THIS IS THE CRITICAL FIX
+  publish = "dist/frontend"  # <-- CRITICAL FIX: The correct output folder
 
 [[redirects]]
   from = "/*"
