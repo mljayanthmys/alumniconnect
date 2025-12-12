@@ -9,7 +9,8 @@
     "test": "ng test"
   },
   "engines": {
-    "node": "20.x"
+    "node": "20.x",
+    "npm": ">=10.0.0"
   },
   "private": true,
   "dependencies": {
