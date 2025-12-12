@@ -1,14 +1,19 @@
 # frontend/netlify.toml
 
 [build]
+  # Base is '.' because the Base Directory in the Netlify UI is set to 'frontend'
   base    = "."
   command = "npm run build"
-  publish = "dist/frontend"  # <-- CRITICAL FIX: The correct output folder
+  # This matches the output directory of your standard Angular build (ng build)
+  publish = "dist/frontend"
 
 [[redirects]]
+  # This ensures Angular's client-side routes (like /directory or /edit/123)
+  # all load the index.html file, preventing 404 errors.
   from = "/*"
   to = "/index.html"
   status = 200
 
 [build.environment]
+  # This pins the Node version, resolving the "non-zero exit code 2" build crash.
   NODE_VERSION = "20"
