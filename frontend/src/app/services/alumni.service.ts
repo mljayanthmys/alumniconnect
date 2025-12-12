@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'; // Used only for typing, not for the core logic (which uses Promises)
 
+// --- Alumni Interface (Extended Data Model) ---
 export interface Alumni {
   _id?: string;
   name: string;
   email: string;
-  batch: string;
+  batch: string; // Changed to string/number if backend expects number
   currentCompany: string;
   jobRole: string;
   location: string;
@@ -19,6 +20,7 @@ export interface Alumni {
   updatedAt?: Date;
 }
 
+// --- API Response Interface ---
 export interface ApiResponse {
   success: boolean;
   message?: string;
@@ -30,21 +32,37 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class AlumniService {
-  private apiUrl = 'http://localhost:5000/api/alumni';
+  // CRITICAL: REPLACE THIS with your live Render API base URL
+  // New Base URL is: https://alumniconnect-sgkm.onrender.com/api/alumni
+  private apiUrl = 'https://alumniconnect-sgkm.onrender.com/api/alumni';
+
+  // Standard headers for JSON communication
+  private httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  };
 
   constructor(private http: HttpClient) {}
 
-  // CREATE - Register new alumni (demonstrating Promise usage)
+  // ===========================================
+  // C - CREATE: Register new alumni (Uses Promise)
+  // Maps to: POST /api/alumni/register
+  // ===========================================
   registerAlumni(alumni: Alumni): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.http.post<ApiResponse>(`${this.apiUrl}/register`, alumni).subscribe({
-        next: (response) => resolve(response),
-        error: (error) => reject(error),
-      });
+      // .subscribe is used inside the Promise wrapper to convert Observable to Promise
+      this.http
+        .post<ApiResponse>(`${this.apiUrl}/register`, alumni, this.httpOptions)
+        .subscribe({
+          next: (response) => resolve(response),
+          error: (error) => reject(error),
+        });
     });
   }
 
-  // READ - Get all alumni (demonstrating Promise usage)
+  // ===========================================
+  // R - READ: Get all alumni (Uses Promise)
+  // Maps to: GET /api/alumni/directory
+  // ===========================================
   getAllAlumni(filters?: any): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       let url = `${this.apiUrl}/directory`;
@@ -64,7 +82,10 @@ export class AlumniService {
     });
   }
 
-  // READ - Get single alumni by ID
+  // ===========================================
+  // R - READ: Get single alumni by ID (Uses Promise)
+  // Maps to: GET /api/alumni/:id
+  // ===========================================
   getAlumniById(id: string): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       this.http.get<ApiResponse>(`${this.apiUrl}/${id}`).subscribe({
@@ -74,17 +95,25 @@ export class AlumniService {
     });
   }
 
-  // UPDATE - Update alumni profile (demonstrating Promise usage)
+  // ===========================================
+  // U - UPDATE: Update alumni profile (Uses Promise)
+  // Maps to: PUT /api/alumni/:id
+  // ===========================================
   updateAlumni(id: string, alumni: Partial<Alumni>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.http.put<ApiResponse>(`${this.apiUrl}/${id}`, alumni).subscribe({
-        next: (response) => resolve(response),
-        error: (error) => reject(error),
-      });
+      this.http
+        .put<ApiResponse>(`${this.apiUrl}/${id}`, alumni, this.httpOptions)
+        .subscribe({
+          next: (response) => resolve(response),
+          error: (error) => reject(error),
+        });
     });
   }
 
-  // DELETE - Delete alumni profile (demonstrating Promise usage)
+  // ===========================================
+  // D - DELETE: Delete alumni profile (Uses Promise)
+  // Maps to: DELETE /api/alumni/:id
+  // ===========================================
   deleteAlumni(id: string): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       this.http.delete<ApiResponse>(`${this.apiUrl}/${id}`).subscribe({
@@ -94,7 +123,10 @@ export class AlumniService {
     });
   }
 
-  // Get admin statistics
+  // ===========================================
+  // ADMIN STATS (Uses Promise)
+  // Maps to: GET /api/alumni/admin/stats
+  // ===========================================
   getAdminStats(): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       this.http.get<ApiResponse>(`${this.apiUrl}/admin/stats`).subscribe({
@@ -104,13 +136,18 @@ export class AlumniService {
     });
   }
 
-  // Verify alumni
+  // ===========================================
+  // VERIFY ALUMNI (Uses Promise)
+  // Maps to: PATCH /api/alumni/:id/verify
+  // ===========================================
   verifyAlumni(id: string): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.http.patch<ApiResponse>(`${this.apiUrl}/${id}/verify`, {}).subscribe({
-        next: (response) => resolve(response),
-        error: (error) => reject(error),
-      });
+      this.http
+        .patch<ApiResponse>(`${this.apiUrl}/${id}/verify`, {}, this.httpOptions)
+        .subscribe({
+          next: (response) => resolve(response),
+          error: (error) => reject(error),
+        });
     });
   }
 }
